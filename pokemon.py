@@ -1,6 +1,6 @@
 class PokeMon:
     sound = ""
-    def __init__(self,name=None,level=1):
+    def __init__(self,name = None,level = 1,master = None):
         self._name = name
         self._level = level
         self.master = "No Master"
@@ -99,12 +99,14 @@ class Zapdos(PokeMon,flying):
 
 
 class Island:
+    pokemon_list = []
     def __init__(self,name=None, max_no_of_pokemon=0, total_food_available_in_kgs=0):
         self._name = name
         self._max_no_of_pokemon = max_no_of_pokemon
         self._total_food_available_in_kgs = total_food_available_in_kgs
         self._pokemon_left_to_catch = 0
-        self._pokemon_list = []
+        self.list_pokemon = []
+        self.pokemon_list.append(self)
         
     @property    
     def name(self):
@@ -123,27 +125,28 @@ class Island:
         return self._pokemon_left_to_catch
         
     def __str__(self):
-        return f"{self._name} - 0 pokemon - {self._total_food_available_in_kgs} food"
+        return f"{self._name} - {self.pokemon_left_to_catch} pokemon - {self._total_food_available_in_kgs} food"
 
         
     def add_pokemon(self,pokemon):
-        self._pokemon_list.append(pokemon)
-        if self._pokemon_left_to_catch  >= self._max_no_of_pokemon:
+        if self._pokemon_left_to_catch  == self._max_no_of_pokemon:
             print("Island at its max pokemon capacity")
             
         else:
             self._pokemon_left_to_catch += 1
             
             
-         
-    def get_all_islands(self):
-        print(f"{self._name} - {self._max_no_of_pokemon} - pokemon - {self._total_food_available_in_kgs} food")
-  
-class Trainer(PokeMon):
+    @classmethod     
+    def get_all_islands(cls):
+       return Island.pokemon_list
+       
+       
+class Trainer(PokeMon,Island):
     def __init__(self,name):
         self._name = name
         self._experience = 100
         self._max_food_in_bag = 10*self._experience
+        self.current_island = None 
         self._food_in_bag = 0
         
     def __str__(self):
@@ -167,23 +170,42 @@ class Trainer(PokeMon):
         return self._food_in_bag
     
     
-    def move_to_island(self,island1):
-        pass
-        
+    def move_to_island(self,island):
+        self.island = island
+        self.current_island = island
+        if self.current_island == None:
+            print("You are not on any island")
+            
+        else:
+            self.current_island = island
+            
+            
+    def collect_food(self):
+        if self.current_island != None:
+            if self.island._total_food_available_in_kgs > self._max_food_in_bag:
+                if self._food_in_bag < self._max_food_in_bag:
+                    self._food_in_bag += self._max_food_in_bag
+                    self.island._total_food_available_in_kgs -= self._food_in_bag
+                else:
+                    self._food_in_bag = self._max_food_in_bag
+            else:
+                self._food_in_bag = self.island._total_food_available_in_kgs
+                self.island._total_food_available_in_kgs = 0
+                
+        else:
+            print("Move to an island to collect food")
+            
   
     def catch(self,pokemon):
-        '''
-        if self._experience <= pokemon.level*100:
-            print(f"You need more experience to {pokemon.name}")
-        else:'''
-        print(f"You caught {pokemon.name}")
-        self._experience += pokemon.level*20
-  
-    def get_my_pokemon(self):
-        return f"[{self._name} - Level {self._level}]"
         
-    
-    
-    
-    
+        if self._experience < pokemon.level*100:
+            print(f"You need more experience to catch {pokemon.name}")
+        else:
+            print(f"You caught {pokemon.name}")
+            self._experience += pokemon.level*20
+            self.list_pokemon.append(pokemon)
+      
+    def get_my_pokemon(self):
+        return self.list_pokemon
+        
     
