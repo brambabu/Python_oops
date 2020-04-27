@@ -105,7 +105,6 @@ class Island:
         self._max_no_of_pokemon = max_no_of_pokemon
         self._total_food_available_in_kgs = total_food_available_in_kgs
         self._pokemon_left_to_catch = 0
-        self.list_pokemon = []
         self.pokemon_list.append(self)
         
     @property    
@@ -148,7 +147,7 @@ class Trainer(PokeMon,Island):
         self._max_food_in_bag = 10*self._experience
         self.current_island = None 
         self._food_in_bag = 0
-        
+        self.list_pokemon = []
     def __str__(self):
         return f"{self._name}"
         
@@ -197,13 +196,13 @@ class Trainer(PokeMon,Island):
             
   
     def catch(self,pokemon):
-        
+        self.list_pokemon.append(pokemon)
         if self._experience < pokemon.level*100:
             print(f"You need more experience to catch {pokemon.name}")
         else:
             print(f"You caught {pokemon.name}")
             self._experience += pokemon.level*20
-            self.list_pokemon.append(pokemon)
+            
       
     def get_my_pokemon(self):
         return self.list_pokemon
