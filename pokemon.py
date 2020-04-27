@@ -3,7 +3,7 @@ class PokeMon:
     def __init__(self,name = None,level = 1,master = None):
         self._name = name
         self._level = level
-        self.master = "No Master"
+        self._master = None
     
         if len(self._name) == 0:
             raise ValueError("name cannot be empty")
@@ -27,8 +27,14 @@ class PokeMon:
     @property
     def level(self):
         return self._level
+    
+    @property     
+    def master(self):
+        if self._master == None:
+            print("No Master")
+        else:
+            return self._master
         
-
 class running:
     by_run = ""
     @classmethod
@@ -145,9 +151,11 @@ class Trainer(PokeMon,Island):
         self._name = name
         self._experience = 100
         self._max_food_in_bag = 10*self._experience
-        self.current_island = None 
+        self._current_island = None 
         self._food_in_bag = 0
         self.list_pokemon = []
+        
+        
     def __str__(self):
         return f"{self._name}"
         
@@ -168,34 +176,34 @@ class Trainer(PokeMon,Island):
     def food_in_bag(self):
         return self._food_in_bag
     
+    @property
+    def current_island(self):
+        if(self._current_island==None):
+            print("You are not on any island")
+        else:
+            return self._current_island
     
     def move_to_island(self,island):
-        self.island = island
-        self.current_island = island
-        if self.current_island == None:
-            print("You are not on any island")
-            
-        else:
-            self.current_island = island
-            
+        self._current_island = island
             
     def collect_food(self):
-        if self.current_island != None:
-            if self.island._total_food_available_in_kgs > self._max_food_in_bag:
+        if self._current_island != None:
+            if self.current_island._total_food_available_in_kgs > self._max_food_in_bag:
                 if self._food_in_bag < self._max_food_in_bag:
                     self._food_in_bag += self._max_food_in_bag
-                    self.island._total_food_available_in_kgs -= self._food_in_bag
+                    self.current_island._total_food_available_in_kgs -= self._food_in_bag
                 else:
                     self._food_in_bag = self._max_food_in_bag
             else:
-                self._food_in_bag = self.island._total_food_available_in_kgs
-                self.island._total_food_available_in_kgs = 0
+                self._food_in_bag = self.current_island._total_food_available_in_kgs
+                self.current_island._total_food_available_in_kgs = 0
                 
         else:
             print("Move to an island to collect food")
             
   
     def catch(self,pokemon):
+        pokemon._master = self
         self.list_pokemon.append(pokemon)
         if self._experience < pokemon.level*100:
             print(f"You need more experience to catch {pokemon.name}")
