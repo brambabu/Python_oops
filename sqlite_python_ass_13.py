@@ -109,124 +109,85 @@ class Student:
     
     @classmethod
     def filter(cls,**kwargs):
-        keys = [];val = []
+        
         for k,v in kwargs.items():
             
             key = (k.split('__'))
             value = v
             
+            if key[0] not in ['age','name','score','student_id']:
+                raise InvalidField
+            
             if len(key) ==1:
+                
                 if key[0] in ['age','score','student_id']:
                     data = read_data('''select * from Student where {} = {}'''.format(key[0],v))
-                    if len(data) != 0:
-                        return(Student(*data[0]))
-                    else:
-                        return []
                     
                 elif key[0] == 'name':
                     data = read_data('''select * from Student where {} like "%{}%" '''.format(key[0],v))
-                    if len(data) != 0:
-                        return(Student(*data[0]))
-                    else:
-                        return []
                     
                 else:
                     raise InvalidField
                     
-            if len(key) > 1:
+            elif len(key) > 1:
                 
                 if key[1] == 'lt':
+                    
                     if key[0] in ['age','score','student_id']:
                         data = read_data('''select * from Student where {} < {}'''.format(key[0],v))
-                        #print(len(data))
-                        lis = []
-                        if len(data) != 0:
-                            for row in range(len(data)):
-                                lis.append(Student(*data[row]))
-                        else:
-                            return []
-                        
-                    return lis
                     
                 if key[1] == 'gt':
+                    
                     if key[0] in ['age','score','student_id']:
                         data = read_data('''select * from Student where {} > {}'''.format(key[0],v))
-                        #print(len(data))
-                        lis = []
-                        if len(data) != 0:
-                            for row in range(len(data)):
-                                lis.append(Student(*data[row]))
-                        else:
-                            return []
-                        
-                    return lis
-                    
+                
                 if key[1] == 'lte':
+                    
                     if key[0] in ['age','score','student_id']:
                         data = read_data('''select * from Student where {} <= {}'''.format(key[0],v))
-                        #print(len(data))
-                        lis = []
-                        if len(data) != 0:
-                            for row in range(len(data)):
-                                lis.append(Student(*data[row]))
-                        else:
-                            return []
-                        
-                    return lis
                     
                 if key[1] == 'gte':
+                    
                     if key[0] in ['age','score','student_id']:
                         data = read_data('''select * from Student where {} >= {}'''.format(key[0],v))
-                        #print(len(data))
-                        lis = []
-                        if len(data) != 0:
-                            for row in range(len(data)):
-                                lis.append(Student(*data[row]))
-                        else:
-                            return []
-                        
-                    return lis
                 
                 if key[1] == 'in':
+                    
                     if key[0] in ['age','name','score','student_id']:
                         data = read_data('''select * from Student where {} in {}'''.format(key[0],tuple(v)))
-                        print(len(data))
-                        lis = []
-                        if len(data) != 0:
-                            for row in range(len(data)):
-                                lis.append(Student(*data[row]))
-                        else:
-                            return []
-                        
-                    return lis
                     
                 if key[1] == 'neq':
-                    if key[0] in ['age','name','score','student_id']:
+                    
+                    if key[0] in ['age','score','student_id']:
                         data = read_data('''select * from Student where {} <> {}'''.format(key[0],v))
-                        #print(len(data))
-                        lis = []
-                        if len(data) != 0:
-                            for row in range(len(data)):
-                                lis.append(Student(*data[row]))
-                        else:
-                            return []
-                        
-                    return lis
+                    
+                    elif key[0] == 'name':
+                        data = read_data('''select * from Student where {} <> "%{}%"'''.format(key[0],v))
                 
                 if key[1] == 'contains':
-                    if key[0] in ['age','score','student_id']:
-                        data = read_data('''select * from Student where {} < {}'''.format(key[0],v))
-                        #print(len(data))
-                        lis = []
-                        if len(data) != 0:
-                            for row in range(len(data)):
-                                lis.append(Student(*data[row]))
-                        else:
-                            return []
+                    
+                    if key[0] == 'name':
+                        data = read_data('''select * from Student where {} like "%{}%"'''.format(key[0],v))
                         
-                    return lis
-                
-                
+            lis = []    
+            if len(data) != 0:
+                for row in range(len(data)):
+                    lis.append(Student(*data[row]))
+            else:
+                return []
+                            
+            return lis    
+'''
+selected_students = Student.filter(age__in = [23,34])
+print(selected_students)        
+
+selected_students = Student.filter(age=34,name = )
+print(selected_students)
+
+selected_students = Student.filter(age = 34,name = 'Jesse Couch')
+print(selected_students)
+
+'''                
                 
 '''
 selected_students = Student.filter(age__in = [23,34])
