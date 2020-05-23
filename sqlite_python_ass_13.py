@@ -148,12 +148,88 @@ class Student:
                         
                     return lis
                     
+                if key[1] == 'gt':
+                    if key[0] in ['age','score','student_id']:
+                        data = read_data('''select * from Student where {} > {}'''.format(key[0],v))
+                        #print(len(data))
+                        lis = []
+                        if len(data) != 0:
+                            for row in range(len(data)):
+                                lis.append(Student(*data[row]))
+                        else:
+                            return []
+                        
+                    return lis
                     
+                if key[1] == 'lte':
+                    if key[0] in ['age','score','student_id']:
+                        data = read_data('''select * from Student where {} <= {}'''.format(key[0],v))
+                        #print(len(data))
+                        lis = []
+                        if len(data) != 0:
+                            for row in range(len(data)):
+                                lis.append(Student(*data[row]))
+                        else:
+                            return []
+                        
+                    return lis
                     
+                if key[1] == 'gte':
+                    if key[0] in ['age','score','student_id']:
+                        data = read_data('''select * from Student where {} >= {}'''.format(key[0],v))
+                        #print(len(data))
+                        lis = []
+                        if len(data) != 0:
+                            for row in range(len(data)):
+                                lis.append(Student(*data[row]))
+                        else:
+                            return []
+                        
+                    return lis
+                
+                if key[1] == 'in':
+                    if key[0] in ['age','name','score','student_id']:
+                        data = read_data('''select * from Student where {} in {}'''.format(key[0],tuple(v)))
+                        print(len(data))
+                        lis = []
+                        if len(data) != 0:
+                            for row in range(len(data)):
+                                lis.append(Student(*data[row]))
+                        else:
+                            return []
+                        
+                    return lis
+                    
+                if key[1] == 'neq':
+                    if key[0] in ['age','name','score','student_id']:
+                        data = read_data('''select * from Student where {} <> {}'''.format(key[0],v))
+                        #print(len(data))
+                        lis = []
+                        if len(data) != 0:
+                            for row in range(len(data)):
+                                lis.append(Student(*data[row]))
+                        else:
+                            return []
+                        
+                    return lis
+                
+                if key[1] == 'contains':
+                    if key[0] in ['age','score','student_id']:
+                        data = read_data('''select * from Student where {} < {}'''.format(key[0],v))
+                        #print(len(data))
+                        lis = []
+                        if len(data) != 0:
+                            for row in range(len(data)):
+                                lis.append(Student(*data[row]))
+                        else:
+                            return []
+                        
+                    return lis
+                
                 
                 
 '''
-selected_students = Student.filter(age__lt = 35)
+selected_students = Student.filter(age__in = [23,34])
 print(selected_students)        
 
 selected_students = Student.filter(age=34,name = )
